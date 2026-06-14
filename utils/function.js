@@ -11,9 +11,9 @@ export const getServerUrl = () => {
     }
 
     const host = window.location.hostname;
-    return host.includes('localhost')
-        ? 'http://localhost:3000'
-        : `http://${host}:3000`;
+   return host.includes('localhost')
+        ? 'http://localhost:8080'
+        : `http://${host}:8080`;
 };
 
 export const resolveImageUrl = (url, fallback = null) => {
@@ -23,25 +23,35 @@ export const resolveImageUrl = (url, fallback = null) => {
 };
 
 export const serverSessionCheck = async () => {
-    const res = await fetch(`${getServerUrl()}/v1/auth/check`, {
+    const accessToken = localStorage.getItem('accessToken');
+    const res = await fetch(`${getServerUrl()}/auth/check`, {
         method: 'GET',
         credentials: 'include',
+        headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
     });
     return res;
 };
 
 export const authCheck = async () => {
     const HTTP_OK = 200;
-    const response = await serverSessionCheck();
-    if (!response || response.status !== HTTP_OK)
+    try {
+        const response = await serverSessionCheck();
+        if (!response || response.status !== HTTP_OK)
+            location.href = '/html/login.html';
+        return response;
+    } catch (e) {
         location.href = '/html/login.html';
-    return response;
+    }
 };
 
 export const authCheckReverse = async () => {
-    const response = await serverSessionCheck();
-    if (response && response.ok) {
-        location.href = '/';
+    try {
+        const response = await serverSessionCheck();
+        if (response && response.ok) {
+            location.href = '/';
+        }
+    } catch (e) {
+        // 네트워크 에러는 무시 - 미로그인 상태로 간주
     }
 };
 // 이메일 유효성 검사
@@ -113,3 +123,7 @@ export const getQueryString = param => {
 export const padTo2Digits = number => {
     return number.toString().padStart(2, '0');
 };
+
+export const getAuthHeader = () => ({
+    Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+});
