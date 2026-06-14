@@ -19,10 +19,15 @@ const updateHelperText = (helperTextElement, message = '') => {
 };
 
 const loginClick = async () => {
+    console.log('loginClick 시작');
     const { id: email, password } = loginData;
     const helperTextElement = document.querySelector('.helperText');
 
-    const { ok, status, code } = await userLogin(email, password);
+    const result = await userLogin(email, password);
+    console.log('userLogin 결과:', result);
+    console.log('data:', result.data);  // 추가
+
+const { ok, status, code, data } = result;
     if (!ok) {
         updateHelperText(
             helperTextElement,
@@ -41,6 +46,8 @@ const loginClick = async () => {
         return;
     }
     updateHelperText(helperTextElement);
+localStorage.setItem('accessToken', data.access_token);
+console.log('저장된 토큰:', localStorage.getItem('accessToken'));
 
     location.href = '/html/index.html';
 };
@@ -68,8 +75,7 @@ const observeSignupData = () => {
 };
 
 const eventSet = () => {
-    document.getElementById('login').addEventListener('click', loginClick);
-
+document.getElementById('login').addEventListener('click', loginClick);
     document.addEventListener('keypress', event => {
         if (event.key === 'Enter') {
             loginClick();
@@ -127,7 +133,7 @@ const init = async () => {
     observeSignupData();
     prependChild(document.body, Header('커뮤니티', 0));
     eventSet();
-    localStorage.clear();
+    // localStorage.clear();
 };
 
 init();

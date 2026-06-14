@@ -3,10 +3,13 @@ import { requestJson } from '../utils/request.js';
 
 export const deleteComment = (postId, commentId) => {
     const result = requestJson(
-        `${getServerUrl()}/v1/posts/${postId}/comments/${commentId}`,
+        `${getServerUrl()}/posts/${postId}/comments/${commentId}`,
         {
             method: 'DELETE',
             credentials: 'include',
+             headers: {
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`,  
+            },
         },
     );
     return result;
@@ -14,14 +17,15 @@ export const deleteComment = (postId, commentId) => {
 
 export const updateComment = (postId, commentId, commentContent) => {
     const result = requestJson(
-        `${getServerUrl()}/v1/posts/${postId}/comments/${commentId}`,
+        `${getServerUrl()}/posts/${postId}/comments/${commentId}`,
         {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`, 
             },
             credentials: 'include',
-            body: JSON.stringify(commentContent),
+            body: JSON.stringify(commentContent), 
         },
     );
     return result;

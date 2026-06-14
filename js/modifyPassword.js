@@ -12,12 +12,12 @@ import {
 const button = document.querySelector('#signupBtn');
 
 const DEFAULT_PROFILE_IMAGE = '../public/image/profile/default.jpg';
-const HTTP_CREATED = 201;
+const HTTP_OK = 200;
 
 const dataResponse = await authCheck();
 const data = await dataResponse.json();
 const profileImage = resolveImageUrl(
-    data.data.profileImageUrl,
+    data.data.profile_image,
     DEFAULT_PROFILE_IMAGE,
 );
 
@@ -98,12 +98,15 @@ const modifyPassword = async () => {
 
     const { status } = await changePassword(password);
 
-    if (status == HTTP_CREATED) {
-        try {
-            await fetch(`${getServerUrl()}/v1/auth/logout`, {
-                method: 'POST',
-                credentials: 'include',
-            });
+    if (status == HTTP_OK) {
+    try {
+        await fetch(`${getServerUrl()}/auth/token`, {  
+            method: 'DELETE',
+            credentials: 'include',
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            },
+        });
         } catch (error) {
             console.error('로그아웃 요청 실패:', error);
         }

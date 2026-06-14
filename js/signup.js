@@ -37,6 +37,7 @@ const getSignupData = () => {
 
 const sendSignupData = async () => {
     const { passwordCheck, ...props } = signupData;
+    props.password_confirm = passwordCheck; 
     if (localStorage.getItem('profileImageUrl')) {
         props.profileImageUrl = localStorage.getItem('profileImageUrl');
     }

@@ -1,52 +1,54 @@
-import { getServerUrl } from '../utils/function.js';
+import { getServerUrl, getAuthHeader } from '../utils/function.js';  // getAuthHeader 추가
 import { requestJson } from '../utils/request.js';
 
 export const getPost = postId => {
-    const result = requestJson(`${getServerUrl()}/v1/posts/${postId}`, {
+    return requestJson(`${getServerUrl()}/posts/${postId}`, {
         credentials: 'include',
+        headers: getAuthHeader(),
     });
-    return result;
 };
 
 export const deletePost = async postId => {
-    const result = await requestJson(`${getServerUrl()}/v1/posts/${postId}`, {
+    return requestJson(`${getServerUrl()}/posts/${postId}`, {
         method: 'DELETE',
         credentials: 'include',
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,  
+        },
     });
-    return result;
 };
 
 export const writeComment = async (pageId, comment) => {
-    const result = await requestJson(`${getServerUrl()}/v1/posts/${pageId}/comments`, {
+    return requestJson(`${getServerUrl()}/posts/${pageId}/comments`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            ...getAuthHeader(),
         },
         credentials: 'include',
-        body: JSON.stringify({ commentContent: comment }),
+        body: JSON.stringify({ content: comment }),
     });
-    return result;
 };
 
 export const getComments = async postId => {
-    const result = await requestJson(`${getServerUrl()}/v1/posts/${postId}/comments`, {
+    return requestJson(`${getServerUrl()}/posts/${postId}/comments`, {
         credentials: 'include',
+        headers: getAuthHeader(),
     });
-    return result;
 };
 
 export const likePost = async postId => {
-    const result = await requestJson(`${getServerUrl()}/v1/posts/${postId}/likes`, {
+    return requestJson(`${getServerUrl()}/posts/${postId}/likes`, {
         method: 'POST',
         credentials: 'include',
+        headers: getAuthHeader(),
     });
-    return result;
 };
 
 export const unlikePost = async postId => {
-    const result = await requestJson(`${getServerUrl()}/v1/posts/${postId}/likes`, {
+    return requestJson(`${getServerUrl()}/posts/${postId}/likes`, {
         method: 'DELETE',
         credentials: 'include',
+        headers: getAuthHeader(),
     });
-    return result;
 };

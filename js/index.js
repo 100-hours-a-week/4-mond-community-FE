@@ -47,14 +47,14 @@ const setBoardItem = boardData => {
         const itemsHtml = boardData
             .map(data =>
                 BoardItem(
-                    data.id,
-                    data.createdAt,
+                    data.post_id,        // data.id → data.post_id
+                    data.created_at,     // data.createdAt → data.created_at
                     data.title,
-                    data.viewCount,
-                    data.author ? data.author.profileImageUrl : null,
-                    data.author ? data.author.nickname : null,
-                    data.commentCount,
-                    data.likeCount,
+                    data.view_count,     // data.viewCount → data.view_count
+                    data.profile_image,              // author.profileImageUrl 없음
+                    data.nickname,       // data.author.nickname → data.nickname
+                    data.comment_count,  // data.commentCount → data.comment_count
+                    data.like_count,     // data.likeCount → data.like_count
                 ),
             )
             .join('');
@@ -157,7 +157,7 @@ const init = async () => {
         }
 
         const profileImageUrl = resolveImageUrl(
-            data.data.profileImageUrl,
+            data.data.profile_image,
             DEFAULT_PROFILE_IMAGE,
         );
 

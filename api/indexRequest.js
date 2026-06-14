@@ -1,28 +1,28 @@
 import { getServerUrl } from '../utils/function.js';
 import { requestJson } from '../utils/request.js';
 
-export const getPosts = (offset, limit) => {
-    const result = requestJson(
-        `${getServerUrl()}/v1/posts?offset=${offset}&limit=${limit}`,
+export const getPosts = (offset = 0, limit = 5) => {
+    const page = Math.floor(offset / limit);
+    return requestJson(
+        `${getServerUrl()}/posts?page=${page}&size=${limit}`,
         {
             credentials: 'include',
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            },
         },
     );
-    return result;
 };
 
 export const searchPosts = (keyword, offset = 0, limit = 5, sort = 'recent') => {
-    const query = new URLSearchParams({
-        keyword,
-        offset,
-        limit,
-        sort,
-    });
-    const result = requestJson(
-        `${getServerUrl()}/v1/posts/search?${query.toString()}`,
+    const page = Math.floor(offset / limit);
+    return requestJson(
+        `${getServerUrl()}/posts/search?keyword=${keyword}&page=${page}&size=${limit}`,
         {
             credentials: 'include',
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            },
         },
     );
-    return result;
 };

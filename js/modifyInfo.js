@@ -26,7 +26,7 @@ const authDataReponse = await authCheck();
 const authData = await authDataReponse.json();
 const changeData = {
     nickname: authData.data.nickname,
-    profileImageUrl: authData.data.profileImageUrl,
+    profileImageUrl: authData.data.profile_image|| null,
 };
 
 const DEFAULT_PROFILE_IMAGE = '../public/image/profile/default.jpg';
@@ -36,18 +36,18 @@ const HTTP_CREATED = 201;
 const setData = data => {
     if (
         // data.profileImageUrl === DEFAULT_PROFILE_IMAGE ||
-        data.profileImageUrl === null
+        data.profile_image === null
     ) {
         profilePreview.src = DEFAULT_PROFILE_IMAGE;
         if (removeProfileButton) removeProfileButton.style.display = 'none';
     } else {
         profilePreview.src = resolveImageUrl(
-            data.profileImageUrl,
+            data.profile_image,
             DEFAULT_PROFILE_IMAGE,
         );
         if (removeProfileButton) removeProfileButton.style.display = 'flex';
 
-        const profileImageUrl = data.profileImageUrl;
+        const profileImageUrl = data.profile_image;
         const fileName = profileImageUrl.split('/').pop();
         localStorage.setItem('profileImageUrl', data.profileImageUrl);
 
@@ -69,7 +69,7 @@ const observeData = () => {
     const button = document.querySelector('#signupBtn');
     if (
         authData.data.nickname !== changeData.nickname ||
-        authData.data.profileImageUrl !== changeData.profileImageUrl
+        authData.data.profile_image !== changeData.profileImageUrl
     ) {
         button.disabled = false;
         button.style.backgroundColor = '#7F6AEE';
@@ -80,10 +80,13 @@ const observeData = () => {
 };
 
 const changeEventHandler = async (event, uid) => {
+    console.log('[changeEventHandler] uid:', uid);
     const button = document.querySelector('#signupBtn');
     if (uid == 'nickname') {
         const value = event.target.value;
+        console.log('[nickname] value:', value);
         const isValidNickname = validNickname(value);
+        console.log('[nickname] isValidNickname:', isValidNickname);
         const helperElement = nicknameHelpElement;
         let isComplete = false;
         if (value == '' || value == null) {
@@ -92,28 +95,33 @@ const changeEventHandler = async (event, uid) => {
             helperElement.textContent =
                 '*닉네임은 2~10자의 영문자, 한글 또는 숫자만 사용할 수 있습니다. 특수 문자와 띄어쓰기는 사용할 수 없습니다.';
         } else {
-            const { status } = await checkNickname(value);
-            if (status === HTTP_OK) {
-                helperElement.textContent = '';
-                isComplete = true;
-            } else if (authData.data.nickname === value) {
+            const { status, data } = await checkNickname(value);
+            console.log('[nickname] checkNickname status:', status, 'data:', data);
+            if (authData.data.nickname === value) {
+                console.log('[nickname] 현재 닉네임과 같음 → 버튼 비활성화');
                 helperElement.textContent = '';
                 button.disabled = true;
                 button.style.backgroundColor = '#ACA0EB';
                 return;
+            } else if (status === HTTP_OK && data === false) {
+                console.log('[nickname] 사용 가능 → isComplete = true');
+                helperElement.textContent = '';
+                isComplete = true;
             } else {
+                console.log('[nickname] 중복');
                 helperElement.textContent = '*중복된 닉네임 입니다.';
                 button.disabled = true;
                 button.style.backgroundColor = '#ACA0EB';
                 return;
             }
         }
+        console.log('[nickname] isComplete:', isComplete);
         if (isComplete) {
             changeData.nickname = value;
         } else {
             changeData.nickname = authData.data.nickname;
         }
-    } else if (uid == 'profile') {
+    }else if (uid == 'profile') {
         // 사용자가 선택한 파일
         const file = event.target.files[0];
         console.log(changeData.profileImageUrl);
@@ -129,7 +137,7 @@ const changeEventHandler = async (event, uid) => {
             // 파일 업로드를 위한 POST 요청 실행
             try {
                 const { ok, data } = await requestJson(
-                    `${getServerUrl()}/v1/users/upload/profile-image`,
+                    `${getServerUrl()}/images/profile`,
                     {
                         method: 'POST',
                         body: formData,
@@ -153,7 +161,12 @@ const changeEventHandler = async (event, uid) => {
             }
         }
     }
+    console.log('[observeData 호출 전] changeData:', changeData);
+    console.log('[observeData 호출 전] authData.data:', authData.data);
+  
     observeData();
+        console.log('[observeData 호출 후] button.disabled:', document.querySelector('#signupBtn').disabled);
+
 };
 
 const sendModifyData = async () => {
@@ -165,7 +178,7 @@ const sendModifyData = async () => {
         } else {
             const { status } = await userModify(changeData);
 
-            if (status === HTTP_CREATED) {
+            if (status === HTTP_OK) {
                 localStorage.removeItem('profileImageUrl');
                 saveToastMessage('수정완료');
                 location.href = '/html/modifyInfo.html';
@@ -185,13 +198,17 @@ const deleteAccount = async () => {
 
         if (status === HTTP_OK) {
             try {
-                await requestJson(`${getServerUrl()}/v1/auth/logout`, {
-                    method: 'POST',
+                await requestJson(`${getServerUrl()}/auth/token`, {
+                    method: 'DELETE',
                     credentials: 'include',
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+                    },
                 });
             } catch (error) {
                 console.error('로그아웃 요청 실패:', error);
             }
+            localStorage.clear(); 
             location.href = '/html/login.html';
         } else {
             Dialog('회원 탈퇴 실패', '회원 탈퇴에 실패했습니다.');
@@ -272,7 +289,7 @@ const displayToastFromStorage = () => {
 
 const init = () => {
     const profileImage =
-        resolveImageUrl(authData.data.profileImageUrl, DEFAULT_PROFILE_IMAGE);
+        resolveImageUrl(authData.data.profile_image, DEFAULT_PROFILE_IMAGE);
 
     prependChild(document.body, Header('커뮤니티', 2, profileImage));
     setData(authData.data);

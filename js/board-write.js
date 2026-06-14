@@ -54,8 +54,8 @@ const observeSignupData = () => {
 const getBoardData = () => {
     return {
         title: boardWrite.title,
-        content: boardWrite.content,
-        attachFileUrl:
+        post_content: boardWrite.content,       // content → post_content
+        attach_file_url:                         // attachFileUrl → attach_file_url
             localStorage.getItem('postFileUrl') === null
                 ? undefined
                 : localStorage.getItem('postFileUrl'),
@@ -76,10 +76,10 @@ const addBoard = async () => {
         const { ok, status, data } = await createPost(boardData);
         if (!ok) throw new Error('서버 응답 오류');
 
-        if (status === HTTP_CREATED) {
-            localStorage.removeItem('postFileUrl');
-            window.location.href = `/html/board.html?id=${data.insertId}`;
-        } else {
+       if (status === HTTP_CREATED) {
+    localStorage.removeItem('postFileUrl');
+    window.location.href = `/html/board.html?id=${data.post_id}`;  // insertId → post_id
+} else {
             const helperElement = contentHelpElement;
             helperElement.textContent = '제목, 내용을 모두 작성해주세요.';
         }
@@ -190,7 +190,7 @@ const addEvent = () => {
 
 const setModifyData = data => {
     titleInput.value = data.title;
-    contentInput.value = data.content;
+    contentInput.value = data.post_content;
 
     const fileUrl = data.fileUrl || resolveImageUrl(data.filePath);
     if (fileUrl) {
@@ -220,7 +220,7 @@ const setModifyData = data => {
     }
 
     boardWrite.title = data.title;
-    boardWrite.content = data.content;
+    boardWrite.content = data.post_content;
 
     observeSignupData();
 };
@@ -231,7 +231,7 @@ const init = async () => {
     const modifyId = checkModifyMode();
 
     const profileImage = resolveImageUrl(
-        data.data.profileImageUrl,
+        data.data.profile_image,
         DEFAULT_PROFILE_IMAGE,
     );
 
