@@ -30,8 +30,9 @@ export const writeComment = async (pageId, comment) => {
     });
 };
 
-export const getComments = async postId => {
-    return requestJson(`${getServerUrl()}/posts/${postId}/comments`, {
+export const getComments = async (postId, cursor = null, limit = 10) => {
+    const cursorParam = cursor ? `&cursor=${cursor}` : '';
+    return requestJson(`${getServerUrl()}/posts/${postId}/comments?size=${limit}${cursorParam}`, {
         credentials: 'include',
         headers: getAuthHeader(),
     });
