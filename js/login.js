@@ -25,7 +25,7 @@ const loginClick = async () => {
 
     const result = await userLogin(email, password);
     console.log('userLogin 결과:', result);
-    console.log('data:', result.data);  // 추가
+    // console.log('data:', result.data);  // 추가
 
 const { ok, status, code, data } = result;
     if (!ok) {
@@ -47,7 +47,7 @@ const { ok, status, code, data } = result;
     }
     updateHelperText(helperTextElement);
 localStorage.setItem('accessToken', data.access_token);
-console.log('저장된 토큰:', localStorage.getItem('accessToken'));
+// console.log('저장된 토큰:', localStorage.getItem('accessToken'));
 
     location.href = '/html/index.html';
 };

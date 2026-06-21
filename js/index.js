@@ -142,7 +142,7 @@ const addInfinityScrollEvent = () => {
         }, 200);
     });
 };
-console.log('index.js 로드됨, accessToken:', localStorage.getItem('accessToken'));
+// console.log('index.js 로드됨, accessToken:', localStorage.getItem('accessToken'));
 
 const init = async () => {
     try {
