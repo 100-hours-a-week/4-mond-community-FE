@@ -1,10 +1,10 @@
 import { getServerUrl } from '../utils/function.js';
 import { requestJson } from '../utils/request.js';
 
-export const getPosts = (offset = 0, limit = 5) => {
-    const page = Math.floor(offset / limit);
+export const getPosts = (cursor = null, limit = 5) => {
+    const cursorParam = cursor ? `&cursor=${cursor}` : '';
     return requestJson(
-        `${getServerUrl()}/posts?page=${page}&size=${limit}`,
+        `${getServerUrl()}/posts?size=${limit}${cursorParam}`,
         {
             credentials: 'include',
             headers: {
@@ -14,10 +14,10 @@ export const getPosts = (offset = 0, limit = 5) => {
     );
 };
 
-export const searchPosts = (keyword, offset = 0, limit = 5, sort = 'recent') => {
-    const page = Math.floor(offset / limit);
+export const searchPosts = (keyword, cursor = null, limit = 5, sort = 'recent') => {
+    const cursorParam = cursor ? `&cursor=${cursor}` : '';
     return requestJson(
-        `${getServerUrl()}/posts/search?keyword=${keyword}&page=${page}&size=${limit}`,
+        `${getServerUrl()}/posts/search?keyword=${keyword}&size=${limit}${cursorParam}`,
         {
             credentials: 'include',
             headers: {
