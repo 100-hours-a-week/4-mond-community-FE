@@ -18,6 +18,10 @@ import {
     unlikePost,
 } from '../api/boardRequest.js';
 
+let commentCursor = null;
+let isCommentEnd = false;
+let isCommentProcessing = false;
+const COMMENTS_PER_LOAD = 10;
 const DEFAULT_PROFILE_IMAGE = '../public/image/profile/default.jpg';
 const MAX_COMMENT_LENGTH = 1000;
 const HTTP_NOT_AUTHORIZED = 401;
@@ -82,7 +86,7 @@ if (imageUrls && imageUrls.length > 0) {
 
     const likeButtonElement = document.querySelector('.likeButton');
     const likeCountElement = likeButtonElement.querySelector('h3');
-    let isLiked = Boolean(data.isLiked);
+    let isLiked = Boolean(data.is_liked);
     let isLikeLoading = false;
 
     likeCountElement.textContent = formatCount(data.like_count);
@@ -175,10 +179,10 @@ const setBoardModify = async (data, myInfo) => {
     }
 };
 
-const getBoardComment = async id => {
-    const { ok, status, data } = await getComments(id);
-    if (!ok) return [];
-    if (status !== HTTP_OK) return [];
+const getBoardComment = async (id, cursor = null) => {
+    const { ok, status, data } = await getComments(id, cursor, COMMENTS_PER_LOAD);
+    if (!ok) return { comments: [], hasNext: false };
+    if (status !== HTTP_OK) return { comments: [], hasNext: false };
     return data;
 };
 
@@ -231,6 +235,28 @@ const inputComment = async () => {
     }
 };
 
+const loadComments = async (pageId, myInfo, reset = false) => {
+    if (isCommentProcessing || (!reset && isCommentEnd)) return;
+    isCommentProcessing = true;
+
+    try {
+        if (reset) {
+            commentCursor = null;
+            isCommentEnd = false;
+        }
+        const { comments, hasNext } = await getBoardComment(pageId, commentCursor);
+        if (!comments || comments.length === 0) {
+            isCommentEnd = true;
+            return;
+        }
+        setBoardComment(comments, myInfo);
+        commentCursor = comments[comments.length - 1].comment_id;
+        isCommentEnd = !hasNext;
+    } finally {
+        isCommentProcessing = false;
+    }
+};
+
 const init = async () => {
     try {
         const data = await authCheck();
@@ -267,7 +293,16 @@ const init = async () => {
         }
         setBoardDetail(pageData);
 
-        getBoardComment(pageId).then(data => setBoardComment(data, myInfo));
+        await loadComments(pageId, myInfo, true);
+
+window.addEventListener('scroll', () => {
+    const hasScrolledToThreshold =
+        window.scrollY + window.innerHeight >=
+        document.documentElement.scrollHeight * 0.9;
+    if (hasScrolledToThreshold) {
+        loadComments(pageId, myInfo);
+    }
+});
     } catch (error) {
         console.error(error);
     }
