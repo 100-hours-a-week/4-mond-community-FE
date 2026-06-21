@@ -36,22 +36,31 @@ export const authCheck = async () => {
     const HTTP_OK = 200;
     try {
         const response = await serverSessionCheck();
-        if (!response || response.status !== HTTP_OK)
+        if (!response || response.status !== HTTP_OK) {
+            localStorage.removeItem('accessToken');  // 추가
             location.href = '/html/login.html';
+        }
         return response;
     } catch (e) {
+        localStorage.removeItem('accessToken');  // 추가
         location.href = '/html/login.html';
     }
 };
 
-export const authCheckReverse = async () => {
+export const authCheckReverse = () => {
+    const accessToken = localStorage.getItem('accessToken');
+    if (!accessToken) return;
+    
+    // 토큰 만료 여부 확인
     try {
-        const response = await serverSessionCheck();
-        if (response && response.ok) {
+        const payload = JSON.parse(atob(accessToken.split('.')[1]));
+        if (payload.exp * 1000 > Date.now()) {
             location.href = '/';
+        } else {
+            localStorage.removeItem('accessToken');  // 만료된 토큰 제거
         }
     } catch (e) {
-        // 네트워크 에러는 무시 - 미로그인 상태로 간주
+        localStorage.removeItem('accessToken');
     }
 };
 // 이메일 유효성 검사
