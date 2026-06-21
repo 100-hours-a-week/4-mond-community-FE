@@ -7,12 +7,11 @@ import { getPosts, searchPosts } from '../api/indexRequest.js';
 const DEFAULT_PROFILE_IMAGE = '../public/image/profile/default.jpg';
 const HTTP_NOT_AUTHORIZED = 401;
 const SCROLL_THRESHOLD = 0.9;
-const INITIAL_OFFSET = 5;
-const ITEMS_PER_LOAD = 5;
+const ITEMS_PER_LOAD = 10;
 const DEFAULT_SORT = 'recent';
 let currentKeyword = '';
 let currentSort = DEFAULT_SORT;
-let offset = 0;
+let cursor = null; 
 let isEnd = false;
 let isProcessing = false;
 
@@ -25,20 +24,15 @@ const updateSortVisibility = () => {
 };
 
 // getBoardItem 함수
-const getBoardItem = async (offsetValue = 0, limitValue = 5) => {
+const getBoardItem = async (cursor = null, limitValue = 5) => {
     const result =
         currentKeyword.trim() === ''
-            ? await getPosts(offsetValue, limitValue)
-            : await searchPosts(
-                  currentKeyword,
-                  offsetValue,
-                  limitValue,
-                  currentSort,
-              );
+            ? await getPosts(cursor, limitValue)
+            : await searchPosts(currentKeyword, cursor, limitValue, currentSort);
     if (!result.ok) {
         throw new Error('Failed to load post list.');
     }
-    return result.data;
+    return result.data;  // { posts: [...], hasNext: true }
 };
 
 const setBoardItem = boardData => {
@@ -75,17 +69,18 @@ const loadBoardItems = async ({ reset = false } = {}) => {
 
     try {
         if (reset) {
-            offset = 0;
+            cursor = null;
             isEnd = false;
             resetBoardList();
         }
-        const items = await getBoardItem(offset, ITEMS_PER_LOAD);
-        if (!items || items.length === 0) {
+        const { posts, hasNext } = await getBoardItem(cursor, ITEMS_PER_LOAD);
+        if (!posts || posts.length === 0) {
             isEnd = true;
             return;
         }
-        setBoardItem(items);
-        offset += ITEMS_PER_LOAD;
+        setBoardItem(posts);
+        cursor = posts[posts.length - 1].post_id;  // 마지막 post_id를 커서로
+        isEnd = !hasNext;
     } catch (error) {
         console.error('Error fetching items:', error);
         isEnd = true;
@@ -133,19 +128,21 @@ const addSortEvent = () => {
 
 // 스크롤 이벤트 추가
 const addInfinityScrollEvent = () => {
-    offset = INITIAL_OFFSET;
-    isEnd = false;
-    isProcessing = false;
-
-    window.addEventListener('scroll', async () => {
-        const hasScrolledToThreshold =
-            window.scrollY + window.innerHeight >=
-            document.documentElement.scrollHeight * SCROLL_THRESHOLD;
-        if (hasScrolledToThreshold) {
-            loadBoardItems();
-        }
+    let scrollTimer = null;
+    window.addEventListener('scroll', () => {
+        if (scrollTimer) return;
+        scrollTimer = setTimeout(() => {
+            scrollTimer = null;
+            const hasScrolledToThreshold =
+                window.scrollY + window.innerHeight >=
+                document.documentElement.scrollHeight * SCROLL_THRESHOLD;
+            if (hasScrolledToThreshold) {
+                loadBoardItems();
+            }
+        }, 200);
     });
 };
+console.log('index.js 로드됨, accessToken:', localStorage.getItem('accessToken'));
 
 const init = async () => {
     try {
