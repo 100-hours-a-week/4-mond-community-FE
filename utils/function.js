@@ -11,9 +11,14 @@ export const getServerUrl = () => {
     }
 
     const host = window.location.hostname;
-   return host.includes('localhost')
-        ? 'http://localhost:8080'
-        : `http://${host}:8080`;
+    
+    // 1. 로컬 환경(내 컴퓨터)일 때는 8080 포트로 연결
+    if (host.includes('localhost') || host.includes('127.0.0.1')) {
+        return 'http://localhost:8080';
+    }
+    
+    // 2. 실제 배포 환경(운영 서버)일 때는 도메인이 꼬이지 않게 실제 백엔드 주소를 정확히 명시
+    return 'https://api.mondcommunity.store';
 };
 
 export const resolveImageUrl = (url, fallback = null) => {
