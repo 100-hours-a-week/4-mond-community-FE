@@ -28,9 +28,9 @@ jobs:
           echo "window.__APP_CONFIG__ = {\"API_BASE_URL\": \"${{ secrets.API_BASE_URL }}\"};" > config.js
           cat config.js
 
-      # 생성된 설정을 아티팩트로 임시 저장하여 배포 Job으로 전달
+      # 최신 노드 환경 패치가 반영된 버전으로 업그레이드
       - name: Upload config.js artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4.1.8
         with:
           name: app-config
           path: config.js
@@ -39,15 +39,15 @@ jobs:
   # 2. CD 단계: S3 업로드 및 CloudFront 무효화 (CI 성공 후 실행)
   continuous-deployment:
     name: Continuous Deployment (CD)
-    needs: continuous-integration # CI가 무조건 성공해야 이 네모 박스가 실행됨
+    needs: continuous-integration
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7.0.0
 
-      # CI 단계에서 만든 config.js 가져오기
+      # 최신 노드 환경 패치가 반영된 버전으로 업그레이드
       - name: Download config.js artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.8
         with:
           name: app-config
 
