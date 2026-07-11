@@ -30,7 +30,7 @@ jobs:
 
       # 완전 최신 메이저 버전 v5로 변경!
       - name: Upload config.js artifact
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: app-config
           path: config.js
@@ -47,7 +47,7 @@ jobs:
 
       # 완전 최신 메이저 버전 v5로 변경!
       - name: Download config.js artifact
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v7
         with:
           name: app-config
 
