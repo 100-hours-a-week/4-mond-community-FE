@@ -33,26 +33,26 @@ jobs:
           echo "window.__APP_CONFIG__ = {\"API_BASE_URL\": \"${{ secrets.API_BASE_URL }}\"};" > config.js
           cat config.js
 
-- name: Sync static assets to S3
-  run: |
-    aws s3 sync . s3://${{ env.S3_BUCKET }} \
-      --delete \
-      --exclude "config.js" \
-      --exclude ".git/*" \
-      --exclude ".github/*" \
-      --exclude "node_modules/*" \
-      --exclude "app.js" \
-      --exclude "package*.json" \
-      --exclude ".env*" \
-      --exclude "*.html" \
-      --cache-control "public, max-age=86400"
+      - name: Sync static assets to S3
+        run: |
+          aws s3 sync . s3://${{ env.S3_BUCKET }} \
+            --delete \
+            --exclude "config.js" \
+            --exclude ".git/*" \
+            --exclude ".github/*" \
+            --exclude "node_modules/*" \
+            --exclude "app.js" \
+            --exclude "package*.json" \
+            --exclude ".env*" \
+            --exclude "*.html" \
+            --cache-control "public, max-age=86400"
 
-- name: Sync HTML files with no-cache
-  run: |
-    aws s3 sync . s3://${{ env.S3_BUCKET }} \
-      --exclude "*" \
-      --include "*.html" \
-      --cache-control "no-cache"
+      - name: Sync HTML files with no-cache
+        run: |
+          aws s3 sync . s3://${{ env.S3_BUCKET }} \
+            --exclude "*" \
+            --include "*.html" \
+            --cache-control "no-cache"
 
       - name: Upload config.js (no-cache)
         run: |
