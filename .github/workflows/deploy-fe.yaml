@@ -35,32 +35,16 @@ jobs:
 
       - name: Sync static assets to S3
         run: |
-          aws s3 sync . s3://${{ env.S3_BUCKET }} \
-            --delete \
-            --exclude "config.js" \
-            --exclude ".git/*" \
-            --exclude ".github/*" \
-            --exclude "node_modules/*" \
-            --exclude "app.js" \
-            --exclude "package*.json" \
-            --exclude ".env*" \
-            --exclude "*.html" \
-            --cache-control "public, max-age=86400"
+          aws s3 sync . s3://${{ env.S3_BUCKET }} --delete --exclude "config.js" --exclude ".git/*" --exclude ".github/*" --exclude "node_modules/*" --exclude "app.js" --exclude "package*.json" --exclude ".env*" --exclude "*.html" --cache-control "public, max-age=86400"
 
       - name: Sync HTML files with no-cache
         run: |
-          aws s3 sync . s3://${{ env.S3_BUCKET }} \
-            --exclude "*" \
-            --include "*.html" \
-            --cache-control "no-cache"
+          aws s3 sync . s3://${{ env.S3_BUCKET }} --exclude "*" --include "*.html" --cache-control "no-cache"
 
       - name: Upload config.js (no-cache)
         run: |
-          aws s3 cp config.js s3://${{ env.S3_BUCKET }}/config.js \
-            --cache-control "no-store"
+          aws s3 cp config.js s3://${{ env.S3_BUCKET }}/config.js --cache-control "no-store"
 
       - name: Invalidate CloudFront cache
         run: |
-          aws cloudfront create-invalidation \
-            --distribution-id ${{ env.CLOUDFRONT_DISTRIBUTION_ID }} \
-            --paths "/*"
+          aws cloudfront create-invalidation --distribution-id ${{ env.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
