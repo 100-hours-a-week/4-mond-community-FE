@@ -7,7 +7,7 @@ on:
       - 'html/**'
       - 'css/**'
       - 'js/**'
-      - '.github/workflows/deploy-fe.yml'
+      - '.github/workflows/deploy-fe.yaml'
 
 env:
   AWS_REGION: ${{ vars.AWS_REGION }}
