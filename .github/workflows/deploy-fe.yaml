@@ -28,9 +28,9 @@ jobs:
           echo "window.__APP_CONFIG__ = {\"API_BASE_URL\": \"${{ secrets.API_BASE_URL }}\"};" > config.js
           cat config.js
 
-      # 최신 노드 환경 패치가 반영된 버전으로 업그레이드
+      # 완전 최신 메이저 버전 v5로 변경!
       - name: Upload config.js artifact
-        uses: actions/upload-artifact@v4.1.8
+        uses: actions/upload-artifact@v5
         with:
           name: app-config
           path: config.js
@@ -45,9 +45,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7.0.0
 
-      # 최신 노드 환경 패치가 반영된 버전으로 업그레이드
+      # 완전 최신 메이저 버전 v5로 변경!
       - name: Download config.js artifact
-        uses: actions/download-artifact@v4.1.8
+        uses: actions/download-artifact@v5
         with:
           name: app-config
 
