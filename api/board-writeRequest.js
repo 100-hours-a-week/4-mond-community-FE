@@ -29,14 +29,31 @@ export const updatePost = (postId, boardData) => {
     });
 };
 
-export const fileUpload = formData => {
-    return requestJson(`${getServerUrl()}/images/post`, {
-        method: 'POST',
-        body: formData,
-        headers: {
-            ...getAuthHeader(),  // 이게 있어?
+export const fileUpload = async file => {
+    const extension = file.name.split('.').pop().toLowerCase();
+    const { ok, data } = await requestJson(
+        `${getServerUrl()}/images/presigned-url`,
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                ...authHeader(),
+            },
+            body: JSON.stringify({ extension, imageType: 'POST' }),
+            credentials: 'include',
         },
+    );
+    if (!ok) throw new Error('presigned URL 발급 실패');
+    const { presignedUrl, s3Url } = data;
+
+    const uploadResponse = await fetch(presignedUrl, {
+        method: 'PUT',
+        headers: { 'Content-Type': file.type },
+        body: file,
     });
+    if (!uploadResponse.ok) throw new Error('S3 업로드 실패');
+
+    return s3Url; // 문자열 반환
 };
 
 export const getBoardItem = postId => {
