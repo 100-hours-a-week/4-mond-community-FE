@@ -121,46 +121,59 @@ const changeEventHandler = async (event, uid) => {
         } else {
             changeData.nickname = authData.data.nickname;
         }
-    }else if (uid == 'profile') {
-        // 사용자가 선택한 파일
-        const file = event.target.files[0];
-        console.log(changeData.profileImageUrl);
-        if (!file) {
-            localStorage.removeItem('profileImageUrl');
-            profilePreview.src = DEFAULT_PROFILE_IMAGE;
-            changeData.profileImageUrl = null;
-            if (removeProfileButton) removeProfileButton.style.display = 'none';
-        } else {
-            const formData = new FormData();
-            formData.append('profileImage', file);
+    } else if (uid == 'profile') {
+    const file = event.target.files[0];
+    console.log(changeData.profileImageUrl);
+    if (!file) {
+        localStorage.removeItem('profileImageUrl');
+        profilePreview.src = DEFAULT_PROFILE_IMAGE;
+        changeData.profileImageUrl = null;
+        if (removeProfileButton) removeProfileButton.style.display = 'none';
+    } else {
+        const extension = file.name.split('.').pop().toLowerCase();
 
-            // 파일 업로드를 위한 POST 요청 실행
-            try {
-                const { ok, data } = await requestJson(
-                    `${getServerUrl()}/images/profile`,
-                    {
-                        method: 'POST',
-                        body: formData,
+        try {
+            // 1. presigned URL 발급
+            const { ok: presignedOk, data: presignedData } = await requestJson(
+                `${getServerUrl()}/images/presigned-url`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
                     },
-                );
+                    body: JSON.stringify({
+                        extension,
+                        imageType: 'PROFILE', // 백엔드 ImageType enum 값과 일치해야 함
+                    }),
+                },
+            );
 
-                if (!ok) throw new Error('서버 응답 오류');
-                localStorage.setItem(
-                    'profileImageUrl',
-                    data.profileImageUrl,
-                );
-                changeData.profileImageUrl = data.profileImageUrl;
-                profilePreview.src = resolveImageUrl(
-                    data.profileImageUrl,
-                    DEFAULT_PROFILE_IMAGE,
-                );
-                if (removeProfileButton)
-                    removeProfileButton.style.display = 'flex';
-            } catch (error) {
-                console.error('업로드 중 오류 발생:', error);
-            }
+            if (!presignedOk) throw new Error('presigned URL 발급 실패');
+
+            const { presignedUrl, s3Url } = presignedData;
+
+            // 2. S3에 직접 PUT 업로드 (백엔드 경유 X)
+            const uploadResponse = await fetch(presignedUrl, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': file.type,
+                },
+                body: file,
+            });
+
+            if (!uploadResponse.ok) throw new Error('S3 업로드 실패');
+
+            // 3. 로컬 상태 갱신 (실제 반영은 sendModifyData에서 userModify 호출 시 처리됨)
+            localStorage.setItem('profileImageUrl', s3Url);
+            changeData.profileImageUrl = s3Url;
+            profilePreview.src = resolveImageUrl(s3Url, DEFAULT_PROFILE_IMAGE);
+            if (removeProfileButton) removeProfileButton.style.display = 'flex';
+        } catch (error) {
+            console.error('업로드 중 오류 발생:', error);
         }
     }
+
     console.log('[observeData 호출 전] changeData:', changeData);
     console.log('[observeData 호출 전] authData.data:', authData.data);
   
