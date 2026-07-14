@@ -131,24 +131,19 @@ const changeEventHandler = async (event, uid) => {
             helperElement.textContent = '';
         }
     } else if (uid == 'image') {
-        const file = event.target.files[0]; // 사용자가 선택한 파일
-        if (!file) {
-            console.log('파일이 선택되지 않았습니다.');
-            return;
-        }
+    const file = event.target.files[0];
+    if (!file) {
+        console.log('파일이 선택되지 않았습니다.');
+        return;
+    }
 
-        const formData = new FormData();
-        formData.append('postFile', file);
-
-        // 파일 업로드를 위한 POST 요청 실행
-        try {
-            const { ok, data } = await fileUpload(formData);
-            if (!ok) throw new Error('서버 응답 오류');
-            localStorage.setItem('postFileUrl', data.fileUrl);
-        } catch (error) {
-            console.error('업로드 중 오류 발생:', error);
-        }
-    } else if (uid === 'imagePreviewText') {
+    try {
+        const s3Url = await fileUpload(file); // formData 아니라 file 자체를 넘김
+        localStorage.setItem('postFileUrl', s3Url);
+    } catch (error) {
+        console.error('업로드 중 오류 발생:', error);
+    }
+} else if (uid === 'imagePreviewText') {
         localStorage.removeItem('postFileUrl');
         imagePreviewText.style.display = 'none';
     }
