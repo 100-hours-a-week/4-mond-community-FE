@@ -179,7 +179,7 @@ const changeEventHandler = async (event, uid) => {
   
     observeData();
         console.log('[observeData 호출 후] button.disabled:', document.querySelector('#signupBtn').disabled);
-
+    }
 };
 
 const sendModifyData = async () => {
