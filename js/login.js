@@ -131,7 +131,7 @@ const lottieAnimation = type => {
 const init = async () => {
     await authCheckReverse();
     observeSignupData();
-    prependChild(document.body, Header('커뮤니티', 0));
+    prependChild(document.body, Header('러닝 커뮤니티', 0));
     eventSet();
     // localStorage.clear();
 };

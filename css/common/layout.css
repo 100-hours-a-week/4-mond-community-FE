@@ -39,7 +39,7 @@ body {
     height: 100vh;
     top: 0;
     z-index: -1;
-    background: url('/public/background/bg.png');
+    background: url('/public/background/run.avif') center center no-repeat;
     background-repeat: no-repeat;
     background-size: 100vw 100vh;
 }
