@@ -40,15 +40,15 @@ export const checkNickname = async nickname => {
 
 // file: File 객체
 export const fileUpload = async file => {
-    // 💡 1. 방어 코드: file이 정상 전달되지 않은 경우 처리 (split 에러 방지)
+    // 💡 방어 코드: file 객체 및 file.name 예외 처리 (split 에러 방지)
     if (!file || !file.name) {
-        console.warn('업로드할 파일이 올바르게 전달되지 않았습니다.');
+        console.warn('유효한 파일 객체가 전달되지 않았습니다.');
         return null;
     }
 
     const extension = file.name.split('.').pop().toLowerCase();
 
-    // 2. presigned URL 발급
+    // 1. presigned URL 발급
     const response = await requestJson(
         `${getServerUrl()}/images/presigned-url/profile/temp`,
         {
@@ -62,16 +62,16 @@ export const fileUpload = async file => {
 
     if (!response || !response.ok) throw new Error('presigned URL 발급 실패');
 
-    // 💡 3. 백엔드 DTO 응답 필드명 대응 (camelCase / snake_case 모두 안전하게 추출)
+    // 💡 백엔드 응답 필드명 대응 (camelCase / snake_case)
     const data = response.data || {};
     const presignedUrl = data.presignedUrl || data.presigned_url;
     const s3Url = data.s3Url || data.s3_url || data.imageUrl || data.image_url;
 
     if (!presignedUrl || !s3Url) {
-        throw new Error('응답받은 Presigned URL 또는 S3 URL 정보가 올바르지 않습니다.');
+        throw new Error('presigned URL 또는 S3 URL 정보를 수신하지 못했습니다.');
     }
 
-    // 4. S3에 직접 PUT 업로드
+    // 2. S3에 직접 PUT 업로드
     const uploadResponse = await fetch(presignedUrl, {
         method: 'PUT',
         headers: {
@@ -82,6 +82,6 @@ export const fileUpload = async file => {
 
     if (!uploadResponse.ok) throw new Error('S3 업로드 실패');
 
-    // 5. 최종 s3Url 반환
+    // 3. 최종 s3Url 반환
     return s3Url;
 };
