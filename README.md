@@ -8,87 +8,21 @@
 
 ### 개발 인원 및 기간
 
-- 개발기간 :  2024-05-03 ~ 2024-04-22
+- 개발기간 :  2026-05-31 ~ 2026-08-09
 - 개발 인원 : 프론트엔드/백엔드 1명 (본인)
 
 ### 사용 기술 및 tools
-- Express.js
+- HTML5 / CSS3
+- vanilla JS
+- Node.js / Express
+- AWS S3 + CloudFront
+- GitHub Actions (CI/CD)
+
 
 ### Back-end
 - <a href="https://github.com/100-hours-a-week/5-erica-react-be(https://github.com/hyo-lin/WEEKLY_TASK2)">Back-end Github</a>
 
-### 폴더 구조
-<details>
-  <summary>폴더 구조 보기/숨기기</summary>
-  <div markdown="1">
 
-    ├── README.md
-    ├── .gitignore
-    ├── package-lock.json
-    ├── package.json
-    ├── public
-    │    ├── index.html
-    │    ├── manifest.json
-    │    └── robots.txt
-    └── src
-         ├── App.js
-         ├── App.test.js
-         ├── index.css
-         ├── index.js
-         ├── logo.svg
-         ├── reportWebVitals.js
-         ├── setupTests.js
-         ├── static.js
-         ├── components
-         │     ├── comments
-         │     │     ├── AddComment.js
-         │     │     ├── Comment.js
-         │     │     └── Comments.js
-         │     ├── modals
-         │     │     ├── DeleteCommentModal.js
-         │     │     ├── DeletePostModal.js
-         │     │     └── Modals.js
-         │     ├── posts
-         │     │     └── MiniPost.js
-         │     ├── users
-         │     │     └── UpdateProfileImage.js
-         │     ├── BackButton.js
-         │     └── Navbar.js
-         ├── pages
-         │     ├── AddPostPage.jsx
-         │     ├── LogInPage.jsx
-         │     ├── PostDetailPage.jsx
-         │     ├── PostPage.jsx
-         │     ├── SignUpPage.jsx
-         │     ├── UpdatePasswordPage.jsx
-         │     ├── UpdatePostPage.jsx
-         │     └── UpdateProfilePage.jsx
-         ├── images
-         │     ├── back.png
-         │     └── profile_img.webp
-         ├── hooks
-         │     └── useFetch.js
-         ├── utils
-         │     ├── numberToK.js
-         │     └── scroll.js
-         └── styles
-               ├── AddComment.module.css
-               ├── AddPost.module.css
-               ├── Comment.module.css
-               ├── Comments.module.css
-               ├── LogIn.module.css
-               ├── MiniPost.module.css
-               ├── Navbar.module.css
-               ├── PostDetail.module.css
-               ├── PostModal.module.css
-               ├── Posts.module.css
-               ├── SignUp.module.css
-               ├── UpdatePassword.module.css
-               ├── UpdatePost.module.css
-               ├── UpdateProfile.module.css
-               └── UserImage.module.css
-    </div>
-  </details>
   <br/>
 
 ## 서비스 화면
@@ -96,45 +30,48 @@
 `홈`
 |로그인|회원가입|
 |---|---|
-|![alt text](image.png)|<img width="1509" height="856" alt="image" src="https://github.com/user-attachments/assets/6d63114b-b4e3-488e-9a66-efa75ce92341" />
+|![alt text](image.png)|![alt text](image-1.png)>|
 
 
 `게시글 목록`
-|전체 게시글|개발 게시글|고민 게시글|
-|---|---|---|
-|![image](https://github.com/100-hours-a-week/5-erica-express-fe/assets/81230764/8cf84f26-cc6f-4cac-a25e-116875345185)|![image](https://github.com/100-hours-a-week/5-erica-express-fe/assets/81230764/0eb19661-b049-4dbb-b319-9b188bed412d)|![image](https://github.com/100-hours-a-week/5-erica-express-fe/assets/81230764/b81534fa-90bd-4cd6-aa89-045573447c6c)|
+|전체 게시글|
+|---|
+|![alt text](image-2.png)|
 
 
 `게시물 작성 / 상세 / 수정 / 삭제`
 
 |게시물 작성|게시물 상세|게시글 수정|게시글 삭제|
 |---|---|---|---|
-|![image](https://github.com/100-hours-a-week/5-erica-express-fe/assets/81230764/d5920b5c-6e6f-4e7c-9eda-9bccba44d267)|![image](https://github.com/100-hours-a-week/5-erica-express-fe/assets/81230764/08804c41-5640-4d37-baf3-9c0ece156ff6)|![image](https://github.com/100-hours-a-week/5-erica-express-fe/assets/81230764/eed24594-d475-499f-bf9b-d580fc782396)|![image](https://github.com/100-hours-a-week/5-erica-express-fe/assets/81230764/88cdcea2-b3b2-4cd0-abdc-52836eb2a92b)|
+|![alt text](image-3.png)|![alt text](image-4.png)|![alt text](image-5.png)|![alt text](image-6.png)|
 
 
 `댓글 목록 / 등록 / 수정 /삭제`
 
 |댓글 화면|댓글 등록|댓글 수정|댓글 삭제|
 |---|---|---|---|
-|![image](https://github.com/100-hours-a-week/5-erica-express-fe/assets/81230764/d57fa86e-d1d8-4fb7-b86c-021129053ef0)|![image](https://github.com/100-hours-a-week/5-erica-express-fe/assets/81230764/076fa883-e20f-46ad-8649-67b38448676a)|![image](https://github.com/100-hours-a-week/5-erica-express-fe/assets/81230764/1c70a6e6-1f4c-4334-aaf9-f8a9ee5d5f9c)|![image](https://github.com/100-hours-a-week/5-erica-express-fe/assets/81230764/3f411243-9cc0-49d7-b3d0-511c961ada60)|
+|![alt text](image-7.png)|![alt text](image-8.png)|![alt text](image-9.png)|![alt text](image-10.png)|
 
   
 `프로필 수정 / 비밀번호 수정 / 회원 탈퇴 / 로그아웃`
 
 |프로필 수정|비밀번호 수정|회원 탈퇴|로그아웃|
 |---|---|---|---|
-|![image](https://github.com/100-hours-a-week/5-erica-express-fe/assets/81230764/f96873ad-36f8-4258-92e0-b0f0f5c047d0)|![image](https://github.com/100-hours-a-week/5-erica-express-fe/assets/81230764/17ac88da-b06a-4b47-ab01-06fdcdced779)|![image](https://github.com/100-hours-a-week/5-erica-express-fe/assets/81230764/95e9e091-139a-4cf2-9d99-e0d22d8d24e5)|![image](https://github.com/100-hours-a-week/5-erica-express-fe/assets/81230764/878fb30b-fdb2-448f-aa16-24e3e088e94d)|
+|![alt text](image-11.png)|![alt text](image-12.png)|![alt text](image-13.png)|![alt text](image-14.png)|
 
 <br/>
 
 ## 트러블 슈팅
+### 이미지 업로드 (S3) 이슈
 
-추후 작성 ...
+- 문제: 프로필/게시글 이미지 업로드 시 CORS 에러로 S3 직접 업로드 실패
+- 원인: 브라우저에서 presigned URL로 S3에 직접 PUT 요청을 보내는 구조인데, S3 버킷 CORS 설정에 프론트엔드 도메인이 등록되어 있지 않아 preflight 요청이 차단됨
+- 해결: S3 버킷 CORS 정책에 허용 Origin·Method(PUT)·Header 추가, 이후 CloudFront 배포 도메인 기준으로 재검증하여 정상 업로드 확인
 
 <br/>
 
 ## 프로젝트 후기
-평소에 웹 페이지를 개발할 때 vanilla가 아닌 React 라이브러리를 사용해서 개발을 하는데, 요번 프로젝트는 vanilla만 사용해서 개발을 했습니다. vanilla에서는 훅을 사용하지 못하기 때문에 훅처럼 동작하는 코드를 만들기 위해 어떻게 해야하나 고민도 많이해보게 된 프로젝트였던 것 같습니다. 프로젝트를 하면서 javascript 동작 방식에 대해서 좀 더 이해하게 되었습니다. 좀 더 많은 기능을 추가하고 싶었으나 아이디어 부족으로 인해, 기능 추가를 하지 못한 점이 아쉬운 것 같습니다. 다음 프로젝트에서는 여러 핵심 기능을 구현하고, 현재 습득한 기술 및 지식을 활용하여 프로젝트를 진행하도록 하겠습니다.
+express를 활용한 프로젝트는 처음이었다. 프레임워크 없이 vanilla JS로 DOM을 직접 조작하고 상태를 관리하다 보니, 평소 상태 변화에 따른 리렌더링, 컴포넌트 단위 관리를 직접 구현하면서 왜 프레임워크가 필요한지 체감할 수 있었다. 프론트와 백엔드를 함께 다루면서 API 설계 방식이 실제 화면 구현 난이도에 어떤 영향을 주는지도 배울 수 있었던 프로젝트였다.
 <br/>
 <br/>
 <br/>
