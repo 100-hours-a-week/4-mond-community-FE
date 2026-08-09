@@ -73,14 +73,14 @@ const setBoardDetail = data => {
 
     // 바디 정보
     const contentImgElement = document.querySelector('.contentImg');
-const imageUrls = data.image_urls;
-if (imageUrls && imageUrls.length > 0) {
-    imageUrls.forEach(url => {
-        const img = document.createElement('img');
-        img.src = resolveImageUrl(url);
-        contentImgElement.appendChild(img);
-    });
-}
+    const imageUrls = data.image_urls;
+    if (imageUrls && imageUrls.length > 0) {
+        imageUrls.forEach(url => {
+            const img = document.createElement('img');
+            img.src = resolveImageUrl(url);
+            contentImgElement.appendChild(img);
+        });
+    }
     const contentElement = document.querySelector('.content');
     contentElement.textContent = data.post_content;
 
@@ -191,11 +191,11 @@ const setBoardComment = (data, myInfo) => {
     if (commentListElement) {
         data.map(event => {
             const item = CommentItem(
-       event,
-    myInfo.user_id,      
-    event.post_id,       
-    event.comment_id,   
-);
+                event,
+                myInfo.user_id,      
+                event.post_id,       
+                event.comment_id,   
+            );
             commentListElement.appendChild(item);
         });
     }
@@ -214,6 +214,7 @@ const addComment = async () => {
     }
 };
 
+/* 💡 오렌지 테마 색상 수정 */
 const inputComment = async () => {
     const textareaElement = document.querySelector(
         '.commentInputWrap textarea',
@@ -226,12 +227,12 @@ const inputComment = async () => {
             MAX_COMMENT_LENGTH,
         );
     }
-    if (textareaElement.value === '') {
+    if (textareaElement.value.trim() === '') {
         commentBtnElement.disabled = true;
-        commentBtnElement.style.backgroundColor = '#ACA0EB';
+        commentBtnElement.style.backgroundColor = '#d9d9d9'; /* 비활성화 연한 그레이 */
     } else {
         commentBtnElement.disabled = false;
-        commentBtnElement.style.backgroundColor = '#7F6AEE';
+        commentBtnElement.style.backgroundColor = '#ff6b35'; /* 활성화 메인 오렌지 */
     }
 };
 
@@ -273,12 +274,14 @@ const init = async () => {
         textareaElement.addEventListener('input', inputComment);
         commentBtnElement.addEventListener('click', addComment);
         commentBtnElement.disabled = true;
+        commentBtnElement.style.backgroundColor = '#d9d9d9'; /* 💡 초기 비활성화 색상 */
+        
         console.log(myInfo);
         if (data.status === HTTP_NOT_AUTHORIZED) {
             window.location.href = '/html/login.html';
         }
         const profileImage = resolveImageUrl(
-             myInfo.profile_image,
+            myInfo.profile_image,
             DEFAULT_PROFILE_IMAGE,
         );
 
@@ -295,14 +298,14 @@ const init = async () => {
 
         await loadComments(pageId, myInfo, true);
 
-window.addEventListener('scroll', () => {
-    const hasScrolledToThreshold =
-        window.scrollY + window.innerHeight >=
-        document.documentElement.scrollHeight * 0.9;
-    if (hasScrolledToThreshold) {
-        loadComments(pageId, myInfo);
-    }
-});
+        window.addEventListener('scroll', () => {
+            const hasScrolledToThreshold =
+                window.scrollY + window.innerHeight >=
+                document.documentElement.scrollHeight * 0.9;
+            if (hasScrolledToThreshold) {
+                loadComments(pageId, myInfo);
+            }
+        });
     } catch (error) {
         console.error(error);
     }

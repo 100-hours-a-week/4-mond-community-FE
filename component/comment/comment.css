@@ -36,13 +36,22 @@
     flex-direction: row;
     column-gap: 8px;
 }
+
+/* 💡 버튼 테두리 및 마우스 호버 스타일 수정 */
 .commentInfoHeader span button {
     padding: 5px 12px;
     border-radius: 8px;
-    border: 1px solid #aca0eb;
+    border: 1px solid #d9d9d9;
     background-color: transparent;
     color: #000;
     font-size: 15px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.commentInfoHeader span button:hover {
+    border-color: #ff6b35;
+    color: #ff6b35;
 }
 
 .commentInfoHeader h3 {
@@ -117,22 +126,23 @@
         border-color 0.2s ease;
 }
 
+/* 💡 저장/취소 버튼 메인 오렌지 테마 적용 */
 .commentEditSave {
-    background-color: #7f6aee;
+    background-color: #ff6b35;
     color: #fff;
     border: none;
 }
 
 .commentEditCancel {
-    background-color: #f3f0ff;
-    color: #5e48d8;
-    border: 1px solid #d8d1ff;
+    background-color: #fff0eb;
+    color: #ff6b35;
+    border: 1px solid #ffd4c4;
 }
 
 .commentEditSave:hover {
-    background-color: #6f58e8;
+    background-color: #e8501f;
 }
 
 .commentEditCancel:hover {
-    background-color: #e7e2ff;
+    background-color: #ffe5dc;
 }
