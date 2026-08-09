@@ -10,6 +10,10 @@
     margin-bottom: 67px;
 }
 
+.title::before {
+    content: '🏃‍♂️ ';
+}
+
 article {
     width: 100%;
     max-width: 360px;
@@ -18,6 +22,11 @@ article {
     align-items: center;
     justify-content: center;
     row-gap: 35px;
+
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
 .inputBox {
@@ -36,6 +45,7 @@ article {
     font-weight: 700;
     color: #000000;
 }
+
 .inputBox input {
     font-size: 14px;
     color: #000000;
@@ -43,23 +53,31 @@ article {
     width: 100%;
     padding: 8px 10px;
 
-    border: 1px solid #000000;
+    border: 1px solid #d9d9d9;
     border-radius: 4px;
 
     background-color: transparent;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.inputBox input:focus {
+    outline: none;
+    border-color: #ff6b35;
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.15);
 }
 
 .inputBox input[type='text'] {
-    flex-grow: 1; /* 입력 필드가 가능한 많은 공간을 차지하도록 함 */
-    padding-right: 10px; /* 오른쪽에 Lottie 애니메이션을 위한 공간 확보 */
+    flex-grow: 1;
+    padding-right: 10px;
 }
+
 .inputBox .lottie {
     position: absolute;
-    right: 10px; /* 입력 필드 오른쪽 끝에서 10px 떨어진 위치 */
-    top: 50%; /* 상단에서 50% 위치 */
+    right: 10px;
+    top: 50%;
 
-    width: 20px; /* Lottie 애니메이션 크기, 필요에 따라 조정 */
-    height: 20px; /* Lottie 애니메이션 크기, 필요에 따라 조정 */
+    width: 20px;
+    height: 20px;
 }
 
 .inputBox input[type='file'] {
@@ -86,6 +104,7 @@ article {
     width: 100%;
     margin-top: 42px;
 }
+
 .buttons p {
     position: absolute;
     top: -4px;
@@ -96,6 +115,7 @@ article {
     font-weight: 400;
     line-height: normal;
 }
+
 .buttons button,
 a {
     font-size: 14px;
@@ -105,15 +125,26 @@ a {
     display: flex;
     justify-content: center;
     align-items: center;
+    column-gap: 6px;
 }
 
 .buttons button {
-    background-color: #aca0eb;
+    background-color: #ff6b35;
     border-radius: 4px;
     border: none;
 
     color: #ffffff;
     font-weight: 700;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.buttons button::before {
+    content: '🔥';
+    font-size: 13px;
+}
+
+.buttons button:hover:not(:disabled) {
+    background-color: #e8501f;
 }
 
 .buttons a {
@@ -128,9 +159,6 @@ a {
 }
 
 #toastContainer {
-    /* position: fixed;
-    top: 0;
-    right: 0; */
     display: flex;
     flex-direction: column;
     align-items: flex-end;
@@ -155,7 +183,7 @@ a {
     display: inline-block;
     width: 100px;
     height: 100px;
-    overflow: visible; /* X 버튼이 바깥으로 나오도록 */
+    overflow: visible;
     border-radius: 50%;
 }
 
@@ -204,6 +232,7 @@ a {
     font-size: 12px;
     z-index: 2;
 }
+
 #profilePreview {
     width: 100%;
     height: 100%;

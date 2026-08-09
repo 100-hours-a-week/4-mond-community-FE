@@ -7,10 +7,11 @@
 }
 
 .red {
-    color: rgba(252, 85, 85, 1);
+    color: #ff3b30;
 }
+
 .gray {
-    color: rgba(199, 202, 209, 1);
+    color: #8e8e93;
 }
 
 .head {
@@ -19,7 +20,7 @@
     flex-direction: column;
     row-gap: 8px;
 
-    border-bottom: 1px solid #00000029;
+    border-bottom: 1px solid #e5e5ec;
     padding-bottom: 16px;
 }
 
@@ -27,7 +28,7 @@
     font-size: 24px;
     line-height: 31px;
     letter-spacing: -0.02em;
-    font-weight: bold;
+    font-weight: 700;
     color: #000000;
 }
 
@@ -36,21 +37,31 @@
     align-items: center;
     column-gap: 12px;
 }
+
 .head .mod {
     margin-left: auto;
 }
+
+/* 💡 수정/삭제 버튼 - 테두리 및 포커스 통일 */
 .head .mod button {
-    padding: 2px 12px;
-
+    padding: 4px 14px;
     border-radius: 8px;
-    border: 1px solid #aca0eb;
-    background-color: transparent;
-
+    border: 1px solid #d9d9d9;
+    background-color: #ffffff;
     cursor: pointer;
 
-    font-size: 15px;
+    font-size: 14px;
+    font-weight: 700;
     line-height: 1.56em;
+    color: #000000;
+    transition: all 0.2s ease;
 }
+
+.head .mod button:hover {
+    border-color: #ff6b35;
+    color: #ff6b35;
+}
+
 .hidden {
     display: none;
 }
@@ -61,19 +72,21 @@
     border-radius: 50%;
     object-fit: cover;
 }
+
 .head .writerWrap .nickname {
     font-size: 16px;
     line-height: 26px;
     letter-spacing: -0.02em;
-    color: rgba(69, 72, 84, 1);
+    color: #000000;
+    font-weight: 700;
 }
+
 .head .writerWrap .createdAt {
     font-size: 12px;
     line-height: 17px;
     letter-spacing: -0.02em;
-    /* color: rgba(171, 174, 186, 1); */
-    color: #000000;
-    font-weight: 200;
+    color: #8e8e93;
+    font-weight: 400;
 }
 
 .body {
@@ -84,26 +97,25 @@
     row-gap: 32px;
 
     padding: 16px 0 32px 0;
-
-    border-bottom: 1px solid rgba(238, 238, 241, 1);
+    border-bottom: 1px solid #e5e5ec;
 }
 
 .body .content {
     font-size: 16px;
     line-height: 26px;
     letter-spacing: -0.02em;
-    color: rgba(92, 97, 112, 1);
+    color: #1c1c1e;
     text-align: left;
     width: 100%;
     word-wrap: break-word;
 }
+
 .body .contentImg img {
     max-width: 100%;
     max-height: 306px;
-
     object-fit: contain;
-
     background: #f4f5f7;
+    border-radius: 8px;
 }
 
 .body .bodyWrap {
@@ -116,7 +128,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-
     row-gap: 16px;
 }
 
@@ -124,6 +135,7 @@
     font-size: 18px;
     line-height: 25px;
     letter-spacing: -0.02em;
+    font-weight: 700;
 }
 
 .body .bodyWrap .likeWrap span {
@@ -138,6 +150,7 @@
     cursor: pointer;
 }
 
+/* 💡 좋아요 & 댓글 수 카운트 박스 */
 .commentWrap {
     display: flex;
     flex-direction: row;
@@ -146,6 +159,7 @@
     gap: 16px;
     width: 100%;
 }
+
 .commentWrap .countItem {
     display: flex;
     flex-direction: column;
@@ -154,22 +168,31 @@
 
     width: 116px;
     height: 77px;
-    border-radius: 16px;
-    background-color: #d9d9d9;
+    border-radius: 12px;
+    background-color: #f4f4f7;
+    border: 1px solid #e5e5ec;
+    transition: all 0.2s ease;
 }
+
 .commentWrap .likeButton {
-    border: none;
+    border: 1px solid #e5e5ec;
     padding: 0;
     cursor: pointer;
-    background-color: #d9d9d9;
+    background-color: #f4f4f7;
     font: inherit;
     color: inherit;
+    transition: all 0.2s ease;
 }
+
+/* 💡 좋아요 활성화 시 메인 오렌지 색상 적용 */
 .commentWrap .likeButton.is-active {
-    background-color: #aca0eb;
+    background-color: #ff6b35;
+    border-color: #ff6b35;
+    color: #ffffff;
 }
+
 .commentWrap .likeButton:focus-visible {
-    outline: 2px solid #7f6aee;
+    outline: 2px solid #ff6b35;
     outline-offset: 2px;
 }
 
@@ -178,6 +201,7 @@
     font-weight: 700;
     line-height: 1.3em;
 }
+
 .commentWrap p {
     font-size: 16px;
     font-weight: 700;
@@ -191,7 +215,6 @@
     display: grid;
     grid-template-rows: 180px 1fr;
     row-gap: 32px;
-
     padding: 32px 0;
 }
 
@@ -204,14 +227,21 @@
     margin-top: 10px;
 }
 
+/* 💡 댓글 입력 영역 */
 .commentInputWrap {
     display: flex;
     flex-direction: column;
-
     height: 180px;
-    border-radius: 16px;
-
+    border-radius: 12px;
+    border: 1px solid #d9d9d9;
     overflow: hidden;
+    background-color: #ffffff;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.commentInputWrap:focus-within {
+    border-color: #ff6b35;
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.15);
 }
 
 .commentInputWrap p {
@@ -221,31 +251,51 @@
 
 .commentInputWrap textarea {
     height: 100%;
-    background-color: rgba(249, 249, 250, 1);
+    background-color: #ffffff;
     border: none;
     resize: none;
     outline: none;
     padding: 16px;
+    font-size: 14px;
+    color: #000000;
 }
+
+.commentInputWrap textarea::placeholder {
+    color: #8e8e93;
+}
+
 .commentInputWrap div {
     display: flex;
     justify-content: flex-end;
-    background-color: rgba(249, 249, 250, 1);
-    padding: 5px;
+    background-color: #f9f9fb;
+    padding: 8px 12px;
     margin-top: 0;
-    border-top: 1px solid rgba(238, 238, 241, 1);
+    border-top: 1px solid #e5e5ec;
 }
+
+/* 💡 댓글 등록 버튼 - 메인 오렌지 버튼 */
 .commentInputWrap div button {
-    padding: 7px 40px;
-    color: rgba(255, 255, 255, 1);
+    padding: 7px 24px;
+    color: #ffffff;
     font-size: 14px;
+    font-weight: 700;
     line-height: 16.8px;
     letter-spacing: -0.01em;
     cursor: pointer;
 
-    background-color: #aca0eb;
+    background-color: #ff6b35;
     border: none;
-    border-radius: 16px;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+}
+
+.commentInputWrap div button:hover:not(:disabled) {
+    background-color: #e8501f;
+}
+
+.commentInputWrap div button:disabled {
+    background-color: #d9d9d9;
+    cursor: not-allowed;
 }
 
 .commentList {

@@ -16,6 +16,7 @@
 <section class="wrap">
     <h1 class="title">로그인</h1>
     <article>
+        <!-- 💡 이메일 입력 영역 -->
         <div class="inputBox">
             <label for="id">이메일</label>
             <input
@@ -25,7 +26,11 @@
                     placeholder="이메일을 입력하세요"
             />
             <div id="lottie-animation" class="lottie"></div>
+            <!-- 이메일 전용 에러 메시지 -->
+            <p class="helperText" id="emailHelperText"></p>
         </div>
+
+        <!-- 💡 비밀번호 입력 영역 -->
         <div class="inputBox">
             <label for="pw">비밀번호</label>
             <input
@@ -34,8 +39,10 @@
                     id="pw"
                     placeholder="비밀번호를 입력하세요"
             />
-            <p class="helperText"></p>
+            <!-- 로그인 실패 전용 에러 메시지 -->
+            <p class="helperText" id="loginHelperText"></p>
         </div>
+
         <div class="buttons">
             <button id="login">로그인</button>
             <a href="signup.html">회원가입</a>

@@ -26,7 +26,7 @@ const authDataReponse = await authCheck();
 const authData = await authDataReponse.json();
 const changeData = {
     nickname: authData.data.nickname,
-    profileImageUrl: authData.data.profile_image|| null,
+    profileImageUrl: authData.data.profile_image || null,
 };
 
 const DEFAULT_PROFILE_IMAGE = '../public/image/profile/default.jpg';
@@ -34,10 +34,7 @@ const HTTP_OK = 200;
 const HTTP_CREATED = 201;
 
 const setData = data => {
-    if (
-        // data.profileImageUrl === DEFAULT_PROFILE_IMAGE ||
-        data.profile_image === null
-    ) {
+    if (data.profile_image === null) {
         profilePreview.src = DEFAULT_PROFILE_IMAGE;
         if (removeProfileButton) removeProfileButton.style.display = 'none';
     } else {
@@ -65,6 +62,7 @@ const setData = data => {
     nicknameInputElement.value = data.nickname;
 };
 
+/* 💡 오렌지 테마 색상 상태 감시 */
 const observeData = () => {
     const button = document.querySelector('#signupBtn');
     if (
@@ -72,16 +70,17 @@ const observeData = () => {
         authData.data.profile_image !== changeData.profileImageUrl
     ) {
         button.disabled = false;
-        button.style.backgroundColor = '#7F6AEE';
+        button.style.backgroundColor = '#ff6b35'; /* 활성화 시 메인 오렌지 */
     } else {
         button.disabled = true;
-        button.style.backgroundColor = '#ACA0EB';
+        button.style.backgroundColor = '#d9d9d9'; /* 비활성화 시 연한 그레이 */
     }
 };
 
 const changeEventHandler = async (event, uid) => {
     console.log('[changeEventHandler] uid:', uid);
     const button = document.querySelector('#signupBtn');
+
     if (uid == 'nickname') {
         const value = event.target.value;
         console.log('[nickname] value:', value);
@@ -89,6 +88,7 @@ const changeEventHandler = async (event, uid) => {
         console.log('[nickname] isValidNickname:', isValidNickname);
         const helperElement = nicknameHelpElement;
         let isComplete = false;
+
         if (value == '' || value == null) {
             helperElement.textContent = '*닉네임을 입력해주세요.';
         } else if (!isValidNickname) {
@@ -97,12 +97,11 @@ const changeEventHandler = async (event, uid) => {
         } else {
             const { status, data } = await checkNickname(value);
             console.log('[nickname] checkNickname status:', status, 'data:', data);
+
             if (authData.data.nickname === value) {
-                console.log('[nickname] 현재 닉네임과 같음 → 버튼 비활성화');
+                console.log('[nickname] 현재 닉네임과 같음');
                 helperElement.textContent = '';
-                button.disabled = true;
-                button.style.backgroundColor = '#ACA0EB';
-                return;
+                isComplete = false;
             } else if (status === HTTP_OK && data === false) {
                 console.log('[nickname] 사용 가능 → isComplete = true');
                 helperElement.textContent = '';
@@ -110,75 +109,70 @@ const changeEventHandler = async (event, uid) => {
             } else {
                 console.log('[nickname] 중복');
                 helperElement.textContent = '*중복된 닉네임 입니다.';
-                button.disabled = true;
-                button.style.backgroundColor = '#ACA0EB';
-                return;
+                isComplete = false;
             }
         }
-        console.log('[nickname] isComplete:', isComplete);
+
         if (isComplete) {
             changeData.nickname = value;
         } else {
             changeData.nickname = authData.data.nickname;
         }
+
+        // 💡 [수정 핵심] 닉네임 검증 후 observeData()를 실행해 버튼을 활성화시킵니다.
+        observeData();
+
     } else if (uid == 'profile') {
-    const file = event.target.files[0];
-    console.log(changeData.profileImageUrl);
-    if (!file) {
-        localStorage.removeItem('profileImageUrl');
-        profilePreview.src = DEFAULT_PROFILE_IMAGE;
-        changeData.profileImageUrl = null;
-        if (removeProfileButton) removeProfileButton.style.display = 'none';
-    } else {
-        const extension = file.name.split('.').pop().toLowerCase();
+        const file = event.target.files[0];
+        console.log(changeData.profileImageUrl);
+        if (!file) {
+            localStorage.removeItem('profileImageUrl');
+            profilePreview.src = DEFAULT_PROFILE_IMAGE;
+            changeData.profileImageUrl = null;
+            if (removeProfileButton) removeProfileButton.style.display = 'none';
+        } else {
+            const extension = file.name.split('.').pop().toLowerCase();
 
-        try {
-            // 1. presigned URL 발급
-            const { ok: presignedOk, data: presignedData } = await requestJson(
-                `${getServerUrl()}/images/presigned-url`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            try {
+                const { ok: presignedOk, data: presignedData } = await requestJson(
+                    `${getServerUrl()}/images/presigned-url`,
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+                        },
+                        body: JSON.stringify({
+                            extension,
+                            imageType: 'PROFILE',
+                        }),
                     },
-                    body: JSON.stringify({
-                        extension,
-                        imageType: 'PROFILE', // 백엔드 ImageType enum 값과 일치해야 함
-                    }),
-                },
-            );
+                );
 
-            if (!presignedOk) throw new Error('presigned URL 발급 실패');
+                if (!presignedOk) throw new Error('presigned URL 발급 실패');
 
-            const { presignedUrl, s3Url } = presignedData;
+                const { presignedUrl, s3Url } = presignedData;
 
-            // 2. S3에 직접 PUT 업로드 (백엔드 경유 X)
-            const uploadResponse = await fetch(presignedUrl, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': file.type,
-                },
-                body: file,
-            });
+                const uploadResponse = await fetch(presignedUrl, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': file.type,
+                    },
+                    body: file,
+                });
 
-            if (!uploadResponse.ok) throw new Error('S3 업로드 실패');
+                if (!uploadResponse.ok) throw new Error('S3 업로드 실패');
 
-            // 3. 로컬 상태 갱신 (실제 반영은 sendModifyData에서 userModify 호출 시 처리됨)
-            localStorage.setItem('profileImageUrl', s3Url);
-            changeData.profileImageUrl = s3Url;
-            profilePreview.src = resolveImageUrl(s3Url, DEFAULT_PROFILE_IMAGE);
-            if (removeProfileButton) removeProfileButton.style.display = 'flex';
-        } catch (error) {
-            console.error('업로드 중 오류 발생:', error);
+                localStorage.setItem('profileImageUrl', s3Url);
+                changeData.profileImageUrl = s3Url;
+                profilePreview.src = resolveImageUrl(s3Url, DEFAULT_PROFILE_IMAGE);
+                if (removeProfileButton) removeProfileButton.style.display = 'flex';
+            } catch (error) {
+                console.error('업로드 중 오류 발생:', error);
+            }
         }
-    }
 
-    console.log('[observeData 호출 전] changeData:', changeData);
-    console.log('[observeData 호출 전] authData.data:', authData.data);
-  
-    observeData();
-        console.log('[observeData 호출 후] button.disabled:', document.querySelector('#signupBtn').disabled);
+        observeData();
     }
 };
 
@@ -204,7 +198,6 @@ const sendModifyData = async () => {
     }
 };
 
-// 회원 탈퇴
 const deleteAccount = async () => {
     const callback = async () => {
         const { status } = await userDelete();
@@ -236,7 +229,8 @@ const deleteAccount = async () => {
 };
 
 const addEvent = () => {
-    nicknameInputElement.addEventListener('change', event =>
+    // 💡 [수정] change 대신 input 이벤트로 변경하여 타이핑 시 즉시 반응하게 만듭니다.
+    nicknameInputElement.addEventListener('input', event =>
         changeEventHandler(event, 'nickname'),
     );
     profileInputElement.addEventListener('change', event =>
@@ -264,24 +258,18 @@ const showToast = (message, duration = 3000, callback = null) => {
 
     container.appendChild(toast);
 
-    // 메시지를 보여주기
     setTimeout(() => {
         toast.style.opacity = 1;
-        // 조금 더 위로 올라가는 효과를 줄 수 있음
         toast.style.bottom = '30px';
     }, 100);
 
-    // 메시지 숨기기 및 콜백 실행
     setTimeout(() => {
         toast.style.opacity = 0;
-        // 원래 위치로 돌아가며 사라지는 효과
         toast.style.bottom = '20px';
         setTimeout(() => {
-            // 페이드 아웃이 끝난 후 요소 제거
             toast.remove();
-            // 콜백 함수가 있으면 실행
             if (callback) callback();
-        }, 500); // CSS transition 시간에 맞춰 설정
+        }, 500);
     }, duration);
 };
 
@@ -289,14 +277,12 @@ const saveToastMessage = message => {
     sessionStorage.setItem('toastMessage', message);
 };
 
-// 토스트 메시지 표시 및 저장소에서 삭제
 const displayToastFromStorage = () => {
     const message = sessionStorage.getItem('toastMessage');
     if (message) {
         showToast(message, 3000, () => {
-            // 메시지 삭제
             sessionStorage.removeItem('toastMessage');
-        }); // 메시지를 표시하는 기존 함수 사용
+        });
     }
 };
 

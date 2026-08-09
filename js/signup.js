@@ -210,6 +210,7 @@ const addEventForInputElements = () => {
     });
 };
 
+/* 💡 오렌지 테마 적용 */
 const observeSignupData = () => {
     const { email, password, passwordCheck, nickname } = signupData;
     const button = document.querySelector('#signupBtn');
@@ -224,10 +225,10 @@ const observeSignupData = () => {
         !passwordCheck
     ) {
         button.disabled = true;
-        button.style.backgroundColor = '#ACA0EB';
+        button.style.backgroundColor = '#d9d9d9'; /* 비활성화 시 그레이 */
     } else {
         button.disabled = false;
-        button.style.backgroundColor = '#7F6AEE';
+        button.style.backgroundColor = '#ff6b35'; /* 활성화 시 오렌지 */
     }
 };
 

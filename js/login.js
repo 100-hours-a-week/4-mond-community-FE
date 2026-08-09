@@ -15,22 +15,23 @@ const loginData = {
 };
 
 const updateHelperText = (helperTextElement, message = '') => {
-    helperTextElement.textContent = message;
+    if (helperTextElement) {
+        helperTextElement.textContent = message;
+    }
 };
 
 const loginClick = async () => {
     console.log('loginClick 시작');
     const { id: email, password } = loginData;
-    const helperTextElement = document.querySelector('.helperText');
+    const loginHelperElement = document.querySelector('#loginHelperText');
 
     const result = await userLogin(email, password);
     console.log('userLogin 결과:', result);
-    // console.log('data:', result.data);  // 추가
 
-const { ok, status, code, data } = result;
+    const { ok, status, code, data } = result;
     if (!ok) {
         updateHelperText(
-            helperTextElement,
+            loginHelperElement,
             code === 'INVALID_INPUT'
                 ? '*입력값을 확인해주세요.'
                 : '*입력하신 계정 정보가 정확하지 않았습니다.',
@@ -40,14 +41,13 @@ const { ok, status, code, data } = result;
 
     if (status !== HTTP_OK) {
         updateHelperText(
-            helperTextElement,
+            loginHelperElement,
             '*입력하신 계정 정보가 정확하지 않았습니다.',
         );
         return;
     }
-    updateHelperText(helperTextElement);
-localStorage.setItem('accessToken', data.access_token);
-// console.log('저장된 토큰:', localStorage.getItem('accessToken'));
+    updateHelperText(loginHelperElement);
+    localStorage.setItem('accessToken', data.access_token);
 
     location.href = '/html/index.html';
 };
@@ -55,11 +55,11 @@ localStorage.setItem('accessToken', data.access_token);
 const observeSignupData = () => {
     const { id: email, password } = loginData;
     const button = document.querySelector('#login');
-    const helperTextElement = document.querySelector('.helperText');
+    const emailHelperElement = document.querySelector('#emailHelperText');
 
     const isValidEmail = validEmail(email);
     updateHelperText(
-        helperTextElement,
+        emailHelperElement,
         isValidEmail || !email
             ? ''
             : '*올바른 이메일 주소 형식을 입력해주세요. (예: example@example.com)',
@@ -71,11 +71,12 @@ const observeSignupData = () => {
         password &&
         password.length >= MAX_PASSWORD_LENGTH
     );
-    button.style.backgroundColor = button.disabled ? '#ACA0EB' : '#7F6AEE';
+    /* 💡 오렌지 테마 색상 적용 */
+    button.style.backgroundColor = button.disabled ? '#d9d9d9' : '#ff6b35';
 };
 
 const eventSet = () => {
-document.getElementById('login').addEventListener('click', loginClick);
+    document.getElementById('login').addEventListener('click', loginClick);
     document.addEventListener('keypress', event => {
         if (event.key === 'Enter') {
             loginClick();
@@ -133,7 +134,6 @@ const init = async () => {
     observeSignupData();
     prependChild(document.body, Header('러닝 커뮤니티', 0));
     eventSet();
-    // localStorage.clear();
 };
 
 init();

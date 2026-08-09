@@ -26,16 +26,16 @@ const modifyData = {
     passwordCheck: '',
 };
 
+/* 💡 오렌지 테마 동적 버튼 스타일 제어 */
 const observeData = () => {
     const { password, passwordCheck } = modifyData;
 
-    // id, pw, pwck, nickname, profile 값이 모두 존재하는지 확인
     if (!password || !passwordCheck || password !== passwordCheck) {
         button.disabled = true;
-        button.style.backgroundColor = '#ACA0EB';
+        button.style.backgroundColor = '#d9d9d9';
     } else {
         button.disabled = false;
-        button.style.backgroundColor = '#7F6AEE';
+        button.style.backgroundColor = '#ff6b35';
     }
 };
 
@@ -55,26 +55,38 @@ const blurEventHandler = async (event, uid) => {
         if (value == '' || value == null) {
             helperElement.textContent = '*비밀번호를 입력해주세요.';
             helperElementCheck.textContent = '';
+            modifyData.password = '';
         } else if (!isValidPassword) {
             helperElement.textContent =
                 '*비밀번호는 8자 이상, 20자 이하이며, 대문자, 소문자, 숫자, 특수문자를 각각 최소 1개 포함해야 합니다.';
             helperElementCheck.textContent = '';
+            modifyData.password = ''; /* 💡 유효하지 않을 경우 초기화 */
         } else {
             helperElement.textContent = '';
             modifyData.password = value;
+
+            /* 💡 pwck가 이미 입력되어 있을 경우 비밀번호 일치 재확인 */
+            if (modifyData.passwordCheck) {
+                if (modifyData.password !== modifyData.passwordCheck) {
+                    helperElementCheck.textContent = '*비밀번호가 다릅니다.';
+                } else {
+                    helperElementCheck.textContent = '';
+                }
+            }
         }
     } else if (uid == 'pwck') {
         const value = event.target.value;
         const helperElement = document.querySelector(
             `.inputBox p[name="${uid}"]`,
         );
-        // pw 입력란의 현재 값
         const password = modifyData.password;
 
         if (value == '' || value == null) {
             helperElement.textContent = '*비밀번호 한번 더 입력해주세요.';
+            modifyData.passwordCheck = '';
         } else if (password !== value) {
             helperElement.textContent = '*비밀번호가 다릅니다.';
+            modifyData.passwordCheck = ''; /* 💡 불일치 시 초기화 */
         } else {
             helperElement.textContent = '';
             modifyData.passwordCheck = value;
@@ -99,14 +111,14 @@ const modifyPassword = async () => {
     const { status } = await changePassword(password);
 
     if (status == HTTP_OK) {
-    try {
-        await fetch(`${getServerUrl()}/auth/token`, {  
-            method: 'DELETE',
-            credentials: 'include',
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-            },
-        });
+        try {
+            await fetch(`${getServerUrl()}/auth/token`, {  
+                method: 'DELETE',
+                credentials: 'include',
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+                },
+            });
         } catch (error) {
             console.error('로그아웃 요청 실패:', error);
         }

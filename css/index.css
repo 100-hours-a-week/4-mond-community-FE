@@ -14,34 +14,55 @@
 .write {
     display: flex;
     flex-direction: column;
-    align-items: flex-start; /* 중앙 정렬에서 시작 정렬로 변경 */
+    align-items: flex-start;
     justify-content: center;
     row-gap: 24px;
     padding: 40px 0 10px 0;
-    width: 100%; /* .write 영역이 부모 컨테이너의 전체 너비를 차지하도록 설정 */
+    width: 100%;
 }
 
+/* 💡 밝고 시원하면서 선명한 민트 블루 컬러 적용 */
 .write h2 {
     font-size: 24px;
-    font-weight: 400;
+    font-weight: 800;
     line-height: 32px;
     letter-spacing: -0.02em;
-    color: rgba(69, 72, 84, 1);
     text-align: center;
-    width: 100%; /* h2도 중앙 정렬을 유지하도록 설정 */
+    width: 100%;
+    color: #0284c7; /* 화사하고 시원한 비비드 블루 */
 }
 
+/* 🏃‍♂️ 게시판 제목 아이콘 */
+.write h2::before {
+    content: '🏃‍♂️ ';
+}
+
+/* 💡 작성하기 버튼 - 메인 오렌지 포인트 */
 .write a {
-    margin-left: auto; /* 링크를 오른쪽으로 밀어붙임 */
+    margin-left: auto;
     margin-right: 10px;
-    padding: 7px 32px;
+    padding: 7px 24px;
     border-radius: 18px;
-    background-color: #aca0eb;
-    font-size: 16px;
-    font-weight: 400;
+    background-color: #ff6b35;
+    font-size: 15px;
+    font-weight: 700;
     line-height: 26px;
     letter-spacing: -0.02em;
     color: #ffffff;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    column-gap: 6px;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.write a::before {
+    content: '✏️';
+    font-size: 13px;
+}
+
+.write a:hover {
+    background-color: #e8501f;
 }
 
 .searchRow {
@@ -61,26 +82,33 @@
     margin-bottom: 8px;
 }
 
+/* 💡 정렬 박스 */
 .sortBox {
     margin-right: 10px;
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 6px 10px;
-    border-radius: 12px;
-    border: 1px solid #e5e5e5;
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1px solid #d9d9d9;
     background-color: #ffffff;
+    transition: border-color 0.2s ease;
+}
+
+.sortBox:hover {
+    border-color: #ff6b35;
 }
 
 .sortIcon {
-    color: #7f6aee;
+    color: #ff6b35;
 }
 
 .sortLabel {
     font-size: 14px;
     line-height: 20px;
     letter-spacing: -0.02em;
-    color: #454854;
+    color: #000000;
+    font-weight: 700;
 }
 
 .sortSelect {
@@ -89,16 +117,16 @@
     font-size: 14px;
     line-height: 20px;
     letter-spacing: -0.02em;
-    color: #454854;
+    color: #000000;
     padding: 2px 4px;
     outline: none;
     cursor: pointer;
 }
 
 .sortSelect:focus-visible {
-    outline: 2px solid #7f6aee;
+    outline: 2px solid #ff6b35;
     outline-offset: 2px;
-    border-radius: 6px;
+    border-radius: 4px;
 }
 
 .isHidden {
@@ -112,29 +140,32 @@
     position: relative;
 }
 
+/* 💡 검색 입력창 */
 .searchInput {
     width: 100%;
     height: 40px;
     padding: 0 44px 0 16px;
-    border-radius: 12px;
-    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    border: 1px solid #d9d9d9;
     background-color: #ffffff;
-    font-size: 16px;
+    font-size: 15px;
     line-height: 26px;
     letter-spacing: -0.02em;
-    color: #454854;
+    color: #000000;
     outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .searchInput::placeholder {
-    color: #a9acb8;
+    color: #8c8c8c;
 }
 
 .searchInput:focus {
-    border-color: #aca0eb;
-    box-shadow: 0 0 0 3px rgba(172, 160, 235, 0.2);
+    border-color: #ff6b35;
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.15);
 }
 
+/* 💡 검색 버튼 */
 .searchButton {
     position: absolute;
     right: 10px;
@@ -143,28 +174,25 @@
     width: 28px;
     height: 28px;
     border: none;
-    border-radius: 8px;
+    border-radius: 6px;
     background-color: transparent;
-    color: #7f6aee;
+    color: #ff6b35;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    transition: background-color 0.2s ease;
 }
 
 .searchButton:hover {
-    background-color: rgba(172, 160, 235, 0.15);
+    background-color: rgba(255, 107, 53, 0.12);
 }
 
 .searchButton:focus-visible {
-    outline: 2px solid #7f6aee;
+    outline: 2px solid #ff6b35;
     outline-offset: 2px;
 }
 
 b {
     font-weight: 700;
-}
-
-.write a:hover {
-    background-color: #7f6aee; /* 여기서 색상을 원하는 색으로 변경하세요 */
 }
