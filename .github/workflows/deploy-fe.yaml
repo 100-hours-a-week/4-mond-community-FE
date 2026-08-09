@@ -2,12 +2,15 @@ name: Deploy Frontend
 
 on:
   push:
-    branches: [main]
+    branches: [main] #  현재 푸시하는 브랜치명으로 지정 
     paths:
       - 'html/**'
       - 'css/**'
       - 'js/**'
-      - '.github/workflows/deploy-fe.yaml'
+      - 'component/**'  #  component 하위 수정 감지
+      - 'utils/**'      #  utils 하위 수정 감지
+      - 'api/**'        #  api 하위 수정 감지
+      - '.github/workflows/**'
 
 env:
   AWS_REGION: ${{ vars.AWS_REGION }}
@@ -21,16 +24,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7.0.0
+        uses: actions/checkout@v4
 
       - name: Generate config.js
         run: |
           echo "window.__APP_CONFIG__ = {\"API_BASE_URL\": \"${{ secrets.API_BASE_URL }}\"};" > config.js
           cat config.js
 
-      # 완전 최신 메이저 버전 v5로 변경!
       - name: Upload config.js artifact
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         with:
           name: app-config
           path: config.js
@@ -43,16 +45,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7.0.0
+        uses: actions/checkout@v4
 
-      # 완전 최신 메이저 버전 v5로 변경!
       - name: Download config.js artifact
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v4
         with:
           name: app-config
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v6.2.2
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
