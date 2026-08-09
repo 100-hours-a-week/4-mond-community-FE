@@ -1,3 +1,5 @@
+// signup.js
+
 import Dialog from '../component/dialog/dialog.js';
 import Header from '../component/header/header.js';
 import {
@@ -69,26 +71,29 @@ const sendSignupData = async () => {
 };
 
 const signupClick = () => {
-    // signup 버튼 클릭 시
     const signupBtn = document.querySelector('#signupBtn');
-    signupBtn.addEventListener('click', getSignupData);
+    if (signupBtn) {
+        signupBtn.addEventListener('click', getSignupData);
+    }
 };
 
 const changeEventHandler = async (event, uid) => {
-    if (uid == 'profile') {
+    if (uid === 'profile') {
         const file = event.target.files[0];
         if (!file) return;
 
         const helperElement = document.querySelector(
             `.inputBox p[name="${uid}"]`,
         );
-        helperElement.textContent = '';
+        if (helperElement) {
+            helperElement.textContent = '';
+        }
     }
     observeSignupData();
 };
 
 const inputEventHandler = async (event, uid) => {
-    if (uid == 'email') {
+    if (uid === 'email') {
         const value = event.target.value;
         const isValidEmail = validEmail(value);
         const helperElement = document.querySelector(
@@ -98,7 +103,7 @@ const inputEventHandler = async (event, uid) => {
 
         if (!helperElement) return;
 
-        if (value == '' || value == null) {
+        if (value === '' || value == null) {
             helperElement.textContent = '*이메일을 입력해주세요.';
         } else if (!isValidEmail) {
             helperElement.textContent =
@@ -117,7 +122,7 @@ const inputEventHandler = async (event, uid) => {
         } else {
             signupData.email = '';
         }
-    } else if (uid == 'pw') {
+    } else if (uid === 'pw') {
         const value = event.target.value;
         const isValidPassword = validPassword(value);
         const helperElement = document.querySelector(
@@ -129,34 +134,33 @@ const inputEventHandler = async (event, uid) => {
 
         if (!helperElement) return;
 
-        if (value == '' || value == null) {
+        if (value === '' || value == null) {
             helperElement.textContent = '*비밀번호를 입력해주세요.';
-            helperElementCheck.textContent = '';
+            if (helperElementCheck) helperElementCheck.textContent = '';
         } else if (!isValidPassword) {
             helperElement.textContent =
                 '*비밀번호는 8자 이상, 20자 이하이며, 대문자, 소문자, 숫자, 특수문자를 각각 최소 1개 포함해야 합니다.';
-            helperElementCheck.textContent = '';
+            if (helperElementCheck) helperElementCheck.textContent = '';
         } else {
             helperElement.textContent = '';
             signupData.password = value;
         }
-    } else if (uid == 'pwck') {
+    } else if (uid === 'pwck') {
         const value = event.target.value;
         const helperElement = document.querySelector(
             `.inputBox p[name="${uid}"]`,
         );
-        // pw 입력란의 현재 값
         const password = signupData.password;
 
-        if (value == '' || value == null) {
-            helperElement.textContent = '*비밀번호 한번 더 입력해주세요.';
+        if (value === '' || value == null) {
+            if (helperElement) helperElement.textContent = '*비밀번호 한번 더 입력해주세요.';
         } else if (password !== value) {
-            helperElement.textContent = '*비밀번호가 다릅니다.';
+            if (helperElement) helperElement.textContent = '*비밀번호가 다릅니다.';
         } else {
             signupData.passwordCheck = value;
-            helperElement.textContent = '';
+            if (helperElement) helperElement.textContent = '';
         }
-    } else if (uid == 'nickname') {
+    } else if (uid === 'nickname') {
         const value = event.target.value;
         const isValidNickname = validNickname(value);
         const helperElement = document.querySelector(
@@ -164,24 +168,22 @@ const inputEventHandler = async (event, uid) => {
         );
         let isComplete = false;
 
-        if (value == '' || value == null) {
-            helperElement.textContent = '*닉네임을 입력해주세요.';
+        if (value === '' || value == null) {
+            if (helperElement) helperElement.textContent = '*닉네임을 입력해주세요.';
         } else if (value.includes(' ')) {
-            helperElement.textContent = '*뛰어쓰기를 없애주세요.';
+            if (helperElement) helperElement.textContent = '*뛰어쓰기를 없애주세요.';
         } else if (value.length > 10) {
-            helperElement.textContent =
-                '*닉네임은 최대 10자까지 작성 가능합니다.';
+            if (helperElement) helperElement.textContent = '*닉네임은 최대 10자까지 작성 가능합니다.';
         } else if (!isValidNickname) {
-            helperElement.textContent =
-                '*닉네임에 특수 문자는 사용할 수 없습니다.';
+            if (helperElement) helperElement.textContent = '*닉네임에 특수 문자는 사용할 수 없습니다.';
         } else {
             const { status } = await checkNickname(value);
 
             if (status === HTTP_OK) {
-                helperElement.textContent = '';
+                if (helperElement) helperElement.textContent = '';
                 isComplete = true;
             } else {
-                helperElement.textContent = '*중복된 닉네임 입니다.';
+                if (helperElement) helperElement.textContent = '*중복된 닉네임 입니다.';
             }
         }
 
@@ -215,6 +217,8 @@ const observeSignupData = () => {
     const { email, password, passwordCheck, nickname } = signupData;
     const button = document.querySelector('#signupBtn');
 
+    if (!button) return;
+
     if (
         !email ||
         !validEmail(email) ||
@@ -232,31 +236,29 @@ const observeSignupData = () => {
     }
 };
 
+/* 💡 프로필 이미지 S3 업로드 수정 */
 const uploadProfileImage = () => {
-    document
-        .getElementById('profile')
-        .addEventListener('change', async event => {
-            const file = event.target.files[0];
-            if (!file) {
-                console.log('파일이 선택되지 않았습니다.');
-                return;
-            }
+    const profileInput = document.getElementById('profile');
+    if (!profileInput) return;
 
-            const formData = new FormData();
-            formData.append('profileImage', file);
+    profileInput.addEventListener('change', async event => {
+        const file = event.target.files?.[0];
+        if (!file) {
+            console.log('파일이 선택되지 않았습니다.');
+            return;
+        }
 
-            // 파일 업로드를 위한 POST 요청 실행
-            try {
-                const { ok, data } = await fileUpload(formData);
-                if (!ok) throw new Error('서버 응답 오류');
-                localStorage.setItem(
-                    'profileImageUrl',
-                    data.profileImageUrl,
-                );
-            } catch (error) {
-                console.error('업로드 중 오류 발생:', error);
+        try {
+            // 💡 FormData가 아닌 file 객체 자체를 전달하고, 결과로 s3Url(문자열)을 받습니다.
+            const s3Url = await fileUpload(file);
+            if (s3Url) {
+                localStorage.setItem('profileImageUrl', s3Url);
+                signupData.profileImageUrl = s3Url;
             }
-        });
+        } catch (error) {
+            console.error('업로드 중 오류 발생:', error);
+        }
+    });
 };
 
 const init = async () => {
