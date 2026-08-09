@@ -40,7 +40,7 @@ export const checkNickname = async nickname => {
 
 // file: File 객체
 export const fileUpload = async file => {
-    // 💡 방어 코드: file 객체 및 file.name 예외 처리 (split 에러 방지)
+    // 💡 방어 코드: file 객체 존재 및 file.name 검증
     if (!file || !file.name) {
         console.warn('유효한 파일 객체가 전달되지 않았습니다.');
         return null;
@@ -60,9 +60,12 @@ export const fileUpload = async file => {
         },
     );
 
-    if (!response || !response.ok) throw new Error('presigned URL 발급 실패');
+    // 💡 requestJson 결과가 null이거나 ok가 false인 경우 방어 처리
+    if (!response || !response.ok) {
+        throw new Error('presigned URL 발급 실패 또는 서버 응답 없음');
+    }
 
-    // 💡 백엔드 응답 필드명 대응 (camelCase / snake_case)
+    // 💡 백엔드 DTO 응답 필드명 대응 (camelCase / snake_case)
     const data = response.data || {};
     const presignedUrl = data.presignedUrl || data.presigned_url;
     const s3Url = data.s3Url || data.s3_url || data.imageUrl || data.image_url;
@@ -82,6 +85,6 @@ export const fileUpload = async file => {
 
     if (!uploadResponse.ok) throw new Error('S3 업로드 실패');
 
-    // 3. 최종 s3Url 반환
+    // 3. 최종 s3Url 반환 (문자열)
     return s3Url;
 };
